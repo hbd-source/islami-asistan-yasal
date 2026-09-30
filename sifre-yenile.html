@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Şifreni yenile | İslami Asistan</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--fg:#14171c;--muted:#5b6470;--accent:#5b6cf0;--err:#b4453a}
+@media (prefers-color-scheme:dark){:root{--bg:#0b0d10;--card:#171a20;--fg:#eef0f3;--muted:#9aa3af;--accent:#8f99ff;--err:#e08a76}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:420px;width:100%;background:var(--card);border-radius:20px;padding:32px 24px;text-align:center;box-shadow:0 6px 30px rgba(0,0,0,.08)}
+h1{font-size:22px;margin:0 0 8px}
+p{margin:0 0 20px;color:var(--muted)}
+a.btn{display:inline-block;padding:13px 26px;border-radius:14px;background:var(--accent);color:#0b0d10;font-weight:600;text-decoration:none}
+small{display:block;margin-top:18px;color:var(--muted);font-size:13px}
+.err{color:var(--err)}
+</style>
+</head>
+<body>
+<main>
+<h1 id="t">Şifreni yenile</h1>
+<p id="m">Bağlantı doğrulandı. Yeni şifreni belirlemek için uygulamayı aç; şifre penceresi orada açılacak.</p>
+<a class="btn" id="open" href="com.hbdsource.islamiasistan://login-callback">Uygulamayı aç</a>
+<small id="s">Bu sayfayı telefonunda, İslami Asistan'ın kurulu olduğu cihazda açmalısın. Düğme çalışmazsa sayfayı kapatıp yeniden e-postadaki bağlantıya dokun.</small>
+</main>
+<script>
+(function(){
+  var q = location.search || '', h = location.hash || '';
+  var all = q + h;
+  if (/error=|error_code=|otp_expired/.test(all)) {
+    document.getElementById('t').textContent = 'Bağlantı geçersiz';
+    document.getElementById('m').textContent = 'Bu bağlantının süresi dolmuş ya da daha önce kullanılmış. Uygulamadan yeniden şifre yenileme isteği gönder.';
+    document.getElementById('m').className = 'err';
+    document.getElementById('open').style.display = 'none';
+    return;
+  }
+  var target = 'com.hbdsource.islamiasistan://login-callback' + q + h;
+  document.getElementById('open').setAttribute('href', target);
+})();
+</script>
+</body>
+</html>
