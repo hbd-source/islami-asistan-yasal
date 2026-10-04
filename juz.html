@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Hatim cüzü | İslami Asistan</title>
+<meta property="og:title" content="İslami Asistan · Hatim cüzü">
+<meta property="og:description" content="Dokun, cüz uygulamada açılsın.">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--fg:#14171c;--muted:#5b6470;--accent:#5b6cf0;--line:#e3e6ea}
+@media (prefers-color-scheme:dark){:root{--bg:#0b0d10;--card:#171a20;--fg:#eef0f3;--muted:#9aa3af;--accent:#8f99ff;--line:#2a2f38}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:420px;width:100%;background:var(--card);border-radius:20px;padding:32px 24px;text-align:center;box-shadow:0 6px 30px rgba(0,0,0,.08)}
+h1{font-size:22px;margin:0 0 8px}
+p{margin:0 0 16px;color:var(--muted)}
+.code{font:600 18px/1.4 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.5px;padding:12px;border:1px solid var(--line);border-radius:12px;margin:0 0 16px;word-break:break-all}
+a.btn,button.btn{display:block;width:100%;margin:10px 0;padding:13px 26px;border-radius:14px;border:0;background:var(--accent);color:#0b0d10;font:600 16px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-decoration:none;cursor:pointer}
+a.ghost,button.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+small{display:block;margin-top:14px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<main>
+<h1>Sana bir cüz ayrıldı</h1>
+<p id="m">Cüzü İslami Asistan'da açıp okuyabilirsin.</p>
+<div class="code" id="code"></div>
+<a class="btn" id="open" href="#">Uygulamada aç</a>
+<a class="btn ghost" id="store" href="indir.html">Uygulama yüklü değilse indir</a>
+<button class="btn ghost" id="copy" type="button">Kodu kopyala</button>
+<small id="s">Uygulamayı yeni indirdiysen: Hatim → Kodla katıl. Kodu kopyaladıysan kutuya kendiliğinden gelir.</small>
+</main>
+<script>
+(function(){
+  var raw = decodeURIComponent((location.hash || '').replace(/^#/, '')).trim().toUpperCase();
+  var ok = /^HATIM-[A-Z0-9]+-\d{1,2}$/.test(raw);
+  var codeEl = document.getElementById('code'), open = document.getElementById('open'),
+      store = document.getElementById('store'), copy = document.getElementById('copy');
+  if (!ok) {
+    document.getElementById('m').textContent = 'Bu bağlantıda geçerli bir cüz kodu yok. Bağlantıyı gönderen kişiden yeniden istemeyi dene.';
+    codeEl.style.display = open.style.display = copy.style.display = 'none';
+    return;
+  }
+  codeEl.textContent = raw;
+  var ua = navigator.userAgent || '';
+  var isAndroid = /Android/i.test(ua);
+  var isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var pkg = 'com.hbdsource.islamiasistan';
+  var play = 'https://play.google.com/store/apps/details?id=' + pkg;
+  var appStore = 'https://apps.apple.com/app/id6818768759';
+  var scheme = pkg + '://juz/' + raw;
+  // Android: uygulama yoksa Chrome kendiliginden Play'e duser.
+  var target = isAndroid
+    ? 'intent://juz/' + raw + '#Intent;scheme=' + pkg + ';package=' + pkg + ';S.browser_fallback_url=' + encodeURIComponent(play) + ';end'
+    : scheme;
+  open.href = target;
+  store.href = isAndroid ? play : isIOS ? appStore : 'indir.html';
+  store.textContent = isAndroid ? "Yüklü değilse Google Play'den indir" : isIOS ? "Yüklü değilse App Store'dan indir" : 'Uygulamayı indir';
+  function copyCode(){
+    try { if (navigator.clipboard) return navigator.clipboard.writeText(raw); } catch (e) {}
+    return null;
+  }
+  copy.addEventListener('click', function(){
+    var p = copyCode();
+    var done = function(){ copy.textContent = 'Kopyalandı'; };
+    if (p && p.then) p.then(done, function(){}); else done();
+  });
+  // Magazaya giderken kod panoya alinir: kurulumdan sonra uygulamada hazir olur.
+  store.addEventListener('click', function(){ copyCode(); });
+  open.addEventListener('click', function(){ copyCode(); });
+  // Telefonda sayfa acilir acilmaz uygulama denenir.
+  if (isAndroid || isIOS) { setTimeout(function(){ location.href = target; }, 250); }
+})();
+</script>
+</body>
+</html>
